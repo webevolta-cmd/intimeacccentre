@@ -46,12 +46,13 @@ html = html.replace(/<script type="module" src="(\/_astro\/[^"]+\.js)"><\/script
 });
 
 // 3. Images: prefer the WebP variant for <img> fallbacks, then inline every local image
-html = html.replace(/(\/images\/[^"\s,]+)-(\d+)\.jpg/g, (m, base, w) => {
+html = html.replace(/(?<![\w.])(\/images\/[^"\s,]+)-(\d+)\.jpg/g, (m, base, w) => {
   const webp = `${base}-${w}.webp`;
   return existsSync(local(webp)) ? webp : m;
 });
 const cache = new Map();
-html = html.replace(/\/images\/[^"\s,)]+\.(?:webp|jpg|png|svg)/g, (ref) => {
+// Only root-relative paths: absolute URLs (canonical, og:image, JSON-LD) stay untouched.
+html = html.replace(/(?<![\w.])\/images\/[^"\s,)]+\.(?:webp|jpg|png|svg)/g, (ref) => {
   if (!cache.has(ref)) cache.set(ref, dataUri(local(ref)));
   return cache.get(ref);
 });
