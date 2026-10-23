@@ -1,0 +1,486 @@
+---
+import Icon from './Icon.astro';
+import { business, contact, inquiryTopics, whatsappLink, viberLink } from '../data/site';
+---
+
+<section class="section section--card contact" id="contact" aria-labelledby="contact-title">
+  <div class="wrap">
+    <div class="section-head">
+      <p class="eyebrow">{contact.eyebrow}</p>
+      <h2 id="contact-title" data-split>{contact.title}</h2>
+      <p data-reveal>{contact.intro}</p>
+    </div>
+
+    <div class="contact__grid">
+      <div class="contact__info">
+        <div class="contact__block" data-reveal>
+          <p class="contact__label">Հեռախոս</p>
+          {
+            business.phones.map((p) => (
+              <div class="contact__phone">
+                <a class="contact__number" href={`tel:${p.tel}`}>
+                  {p.display}
+                </a>
+                <div class="contact__phone-actions">
+                  <button class="chip" type="button" data-copy={p.display} aria-label={`Պատճենել ${p.display} համարը`}>
+                    <Icon name="copy" />
+                    <span data-copy-label>Պատճենել</span>
+                  </button>
+                  {p.whatsapp && (
+                    <a class="chip" href={`https://wa.me/${p.tel.replace('+', '')}`} target="_blank" rel="noopener">
+                      <Icon name="whatsapp" />
+                      WhatsApp
+                    </a>
+                  )}
+                  {p.viber && (
+                    <a class="chip" href={viberLink}>
+                      <Icon name="viber" />
+                      Viber
+                    </a>
+                  )}
+                </div>
+              </div>
+            ))
+          }
+        </div>
+
+        <div class="contact__block" data-reveal>
+          <p class="contact__label">Հասցե</p>
+          <p class="contact__address">
+            {business.address.streetShort}
+            <span>{business.address.city}, Հայաստան</span>
+          </p>
+          <div class="contact__phone-actions">
+            <a class="chip" href={business.maps.google} target="_blank" rel="noopener">
+              <Icon name="pin" />
+              Google Maps
+            </a>
+            <a class="chip" href={business.maps.yandex} target="_blank" rel="noopener">
+              <Icon name="pin" />
+              Yandex Maps
+            </a>
+          </div>
+        </div>
+
+        <div class="contact__block contact__block--row" data-reveal>
+          <div>
+            <p class="contact__label">Աշխատանքային ժամեր</p>
+            <p class="contact__hours">{business.hours.text}</p>
+            <p class="contact__muted">{business.hours.closed}</p>
+          </div>
+          <div>
+            <p class="contact__label">Սոցիալական ցանցեր</p>
+            <div class="contact__social">
+              <a href={business.social.instagram} target="_blank" rel="noopener" aria-label="Instagram">
+                <Icon name="instagram" />
+              </a>
+              <a href={business.social.facebook} target="_blank" rel="noopener" aria-label="Facebook">
+                <Icon name="facebook" />
+              </a>
+              <a href={whatsappLink()} target="_blank" rel="noopener" aria-label="WhatsApp">
+                <Icon name="whatsapp" />
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="contact__form-wrap" data-reveal>
+        <form
+          class="inquiry"
+          name="inquiry"
+          method="POST"
+          action="/thanks/"
+          data-netlify="true"
+          netlify-honeypot="bot-field"
+          novalidate
+          data-inquiry-form
+        >
+          <input type="hidden" name="form-name" value="inquiry" />
+          <p class="inquiry__hp" aria-hidden="true">
+            <label>Մի լրացրեք այս դաշտը <input name="bot-field" tabindex="-1" autocomplete="off" /></label>
+          </p>
+
+          <h3 class="inquiry__title">Հայտ խորհրդատվության համար</h3>
+
+          <div class="field">
+            <label for="f-name">Անուն <span aria-hidden="true">*</span></label>
+            <input id="f-name" name="name" type="text" autocomplete="name" required maxlength="80" aria-describedby="f-name-error" />
+            <p class="field__error" id="f-name-error" data-error-for="name"></p>
+          </div>
+
+          <div class="field">
+            <label for="f-company">Ընկերություն <span class="field__opt">(ըստ ցանկության)</span></label>
+            <input id="f-company" name="company" type="text" autocomplete="organization" maxlength="120" />
+          </div>
+
+          <div class="field">
+            <label for="f-contact">Հեռախոս կամ էլ. փոստ <span aria-hidden="true">*</span></label>
+            <input
+              id="f-contact"
+              name="contact"
+              type="text"
+              autocomplete="tel"
+              inputmode="text"
+              required
+              maxlength="120"
+              aria-describedby="f-contact-hint f-contact-error"
+            />
+            <p class="field__hint" id="f-contact-hint">Օրինակ՝ +374 XX XXX XXX կամ name@example.com</p>
+            <p class="field__error" id="f-contact-error" data-error-for="contact"></p>
+          </div>
+
+          <div class="field">
+            <label for="f-topic">Թեմա <span aria-hidden="true">*</span></label>
+            <div class="field__select">
+              <select id="f-topic" name="topic" required aria-describedby="f-topic-error" data-topic-select>
+                <option value="">Ընտրեք թեման</option>
+                {inquiryTopics.map((t) => <option value={t.value}>{t.value}</option>)}
+              </select>
+            </div>
+            <p class="field__error" id="f-topic-error" data-error-for="topic"></p>
+          </div>
+
+          <div class="field">
+            <label for="f-message">Հաղորդագրություն <span class="field__opt">(ըստ ցանկության)</span></label>
+            <textarea id="f-message" name="message" rows="4" maxlength="1000" aria-describedby="f-message-hint"></textarea>
+            <p class="field__hint" id="f-message-hint">{contact.privacyNote}</p>
+          </div>
+
+          <div class="inquiry__actions">
+            <button class="btn btn--primary" type="submit" data-submit>
+              <span data-submit-label>Ուղարկել հայտը</span>
+              <Icon name="arrow" />
+            </button>
+            <a class="btn btn--ghost" href={whatsappLink()} target="_blank" rel="noopener" data-whatsapp-send>
+              <Icon name="whatsapp" />
+              <span>Ուղարկել WhatsApp-ով</span>
+            </a>
+          </div>
+
+          <div class="inquiry__status" role="status" aria-live="polite" data-form-status hidden></div>
+        </form>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style is:global>
+  .contact__grid {
+    display: grid;
+    grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+    gap: clamp(32px, 5vw, 80px);
+    align-items: start;
+  }
+
+  .contact__info {
+    display: grid;
+    gap: 0;
+    border-top: 1px solid var(--line-strong);
+  }
+
+  .contact__block {
+    display: grid;
+    gap: 12px;
+    padding-block: 26px;
+    border-bottom: 1px solid var(--line-strong);
+  }
+
+  .contact__block--row {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 24px;
+  }
+
+  .contact__label {
+    font-size: var(--t-label);
+    font-weight: 650;
+    font-stretch: 75%;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--green-ink);
+  }
+
+  .contact__phone {
+    display: grid;
+    gap: 10px;
+  }
+
+  .contact__phone + .contact__phone {
+    margin-top: 8px;
+  }
+
+  .contact__number {
+    font-family: var(--f-display);
+    font-size: clamp(1.6rem, 1.2rem + 1.4vw, 2.3rem);
+    line-height: 1.1;
+    text-decoration: none;
+    font-variant-numeric: tabular-nums;
+    width: fit-content;
+    user-select: all;
+  }
+
+  .contact__number:hover {
+    color: var(--green-ink);
+  }
+
+  .contact__phone-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    min-height: 40px;
+    padding: 8px 14px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    text-decoration: none;
+    color: var(--ink);
+    background: var(--paper);
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    cursor: pointer;
+    transition:
+      background-color 0.25s ease,
+      border-color 0.25s ease,
+      color 0.25s ease;
+  }
+
+  .chip .icon {
+    width: 18px;
+    height: 18px;
+    color: var(--green-ink);
+  }
+
+  .chip:hover {
+    border-color: var(--ink);
+  }
+
+  .chip.is-done {
+    background: var(--mint-soft);
+    border-color: var(--green);
+  }
+
+  .contact__address {
+    font-family: var(--f-display);
+    font-size: clamp(1.4rem, 1.15rem + 1vw, 1.9rem);
+    line-height: 1.2;
+  }
+
+  .contact__address span {
+    display: block;
+    margin-top: 4px;
+    font-family: var(--f-body);
+    font-size: 1rem;
+    color: var(--muted);
+  }
+
+  .contact__hours {
+    font-weight: 600;
+  }
+
+  .contact__muted {
+    color: var(--muted);
+    font-size: var(--t-small);
+  }
+
+  .contact__social {
+    display: flex;
+    gap: 8px;
+  }
+
+  .contact__social a {
+    display: grid;
+    place-items: center;
+    width: 46px;
+    height: 46px;
+    border-radius: var(--radius-leaf-sm);
+    border: 1.5px solid var(--line-strong);
+    transition:
+      background-color 0.3s ease,
+      color 0.3s ease,
+      border-color 0.3s ease;
+  }
+
+  .contact__social a:hover {
+    background: var(--ink);
+    border-color: var(--ink);
+    color: #fff;
+  }
+
+  .contact__social .icon {
+    width: 22px;
+    height: 22px;
+  }
+
+  /* Form */
+  .inquiry {
+    display: grid;
+    gap: 18px;
+    padding: clamp(24px, 3.6vw, 48px);
+    background: var(--paper);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-leaf-lg);
+  }
+
+  .inquiry__title {
+    font-size: var(--t-h3);
+    margin-bottom: 4px;
+  }
+
+  .inquiry__hp {
+    position: absolute;
+    left: -9999px;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+  }
+
+  .field {
+    display: grid;
+    gap: 6px;
+  }
+
+  .field label {
+    font-weight: 600;
+    font-size: 0.95rem;
+  }
+
+  .field label span[aria-hidden] {
+    color: var(--green-ink);
+  }
+
+  .field__opt {
+    font-weight: 400;
+    color: var(--muted);
+  }
+
+  .field input,
+  .field select,
+  .field textarea {
+    width: 100%;
+    min-height: 52px;
+    padding: 13px 16px;
+    font-size: 1rem;
+    background: var(--card);
+    border: 1.5px solid var(--line-strong);
+    border-radius: 3px 12px 3px 12px;
+    transition:
+      border-color 0.25s ease,
+      box-shadow 0.25s ease;
+    appearance: none;
+  }
+
+  .field textarea {
+    resize: vertical;
+    min-height: 120px;
+    line-height: 1.5;
+  }
+
+  .field input:focus,
+  .field select:focus,
+  .field textarea:focus {
+    outline: none;
+    border-color: var(--green-ink);
+    box-shadow: 0 0 0 4px rgba(15, 158, 76, 0.16);
+  }
+
+  .field__select {
+    position: relative;
+  }
+
+  .field__select::after {
+    content: '';
+    position: absolute;
+    right: 18px;
+    top: 50%;
+    width: 9px;
+    height: 9px;
+    border-right: 1.8px solid var(--ink);
+    border-bottom: 1.8px solid var(--ink);
+    transform: translateY(-70%) rotate(45deg);
+    pointer-events: none;
+  }
+
+  .field__select select {
+    padding-right: 44px;
+    cursor: pointer;
+  }
+
+  .field__hint {
+    font-size: 0.875rem;
+    color: var(--muted);
+  }
+
+  .field__error {
+    display: none;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--danger);
+  }
+
+  .field.has-error .field__error {
+    display: flex;
+  }
+
+  .field.has-error input,
+  .field.has-error select {
+    border-color: var(--danger);
+  }
+
+  .inquiry__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-top: 4px;
+  }
+
+  .inquiry__status {
+    padding: 16px 18px;
+    border-radius: var(--radius-leaf-sm);
+    font-weight: 500;
+    line-height: 1.5;
+  }
+
+  .inquiry__status[data-state='success'] {
+    background: var(--mint-soft);
+    color: var(--green-deep);
+  }
+
+  .inquiry__status[data-state='error'],
+  .inquiry__status[data-state='preview'] {
+    background: var(--danger-soft);
+    color: var(--danger);
+  }
+
+  .inquiry__status[data-state='preview'] {
+    background: #fff6e5;
+    color: #7a4b00;
+  }
+
+  .inquiry__status[data-state='sending'] {
+    background: var(--paper-2);
+    color: var(--ink-2);
+  }
+
+  @media (max-width: 960px) {
+    .contact__grid {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+
+  @media (max-width: 520px) {
+    .contact__block--row {
+      grid-template-columns: minmax(0, 1fr);
+    }
+
+    .inquiry__actions .btn {
+      flex: 1 1 100%;
+    }
+  }
+</style>

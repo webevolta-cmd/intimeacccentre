@@ -1,0 +1,25 @@
+---
+/**
+ * Responsive photo from /public/images. Expects pre-generated files named
+ * `<src>-<width>.webp` for each width plus a `<src>-<fallback>.jpg`.
+ */
+interface Props {
+  src: string;
+  alt: string;
+  widths: number[];
+  fallback: number;
+  width: number;
+  height: number;
+  sizes: string;
+  class?: string;
+  loading?: 'lazy' | 'eager';
+}
+
+const { src, alt, widths, fallback, width, height, sizes, class: className = '', loading = 'lazy' } = Astro.props;
+const srcset = widths.map((w) => `${src}-${w}.webp ${w}w`).join(', ');
+---
+
+<picture class={className}>
+  <source type="image/webp" srcset={srcset} sizes={sizes} />
+  <img src={`${src}-${fallback}.jpg`} alt={alt} width={width} height={height} loading={loading} decoding="async" />
+</picture>

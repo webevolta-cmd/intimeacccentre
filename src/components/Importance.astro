@@ -1,0 +1,183 @@
+---
+import { importance } from '../data/site';
+---
+
+<section class="section importance" id="why-accounting" aria-labelledby="importance-title">
+  <div class="wrap importance__grid">
+    <div class="importance__head">
+      <div class="importance__sticky">
+        <p class="eyebrow">{importance.eyebrow}</p>
+        <h2 id="importance-title" class="importance__title" data-split>{importance.title}</h2>
+        <p class="importance__intro" data-reveal>{importance.intro}</p>
+      </div>
+    </div>
+    <ol class="ledger" role="list" data-ledger>
+      {
+        importance.items.map((item) => (
+          <li class="ledger__row" data-ledger-row>
+            <span class="ledger__tick" aria-hidden="true">
+              <svg viewBox="0 0 28 28">
+                <path class="ledger__box" d="M4 2h14q8 0 8 8v14q0 2-2 2H10q-8 0-8-8V4q0-2 2-2Z" />
+                <path class="ledger__check" d="m8 14.5 4 4 8-9" pathLength="1" />
+              </svg>
+            </span>
+            <div class="ledger__body">
+              <h3 class="ledger__title">{item.title}</h3>
+              <p class="ledger__text">{item.text}</p>
+            </div>
+            <span class="ledger__rule" aria-hidden="true" />
+          </li>
+        ))
+      }
+    </ol>
+  </div>
+</section>
+
+<style is:global>
+  .importance__grid {
+    display: grid;
+    grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+    gap: clamp(32px, 6vw, 112px);
+    align-items: start;
+  }
+
+  .importance__sticky {
+    position: sticky;
+    top: calc(var(--header-h) + 48px);
+    display: grid;
+    gap: 20px;
+  }
+
+  .importance__title {
+    font-size: var(--t-h2);
+  }
+
+  .importance__intro {
+    font-size: var(--t-lead);
+    color: var(--ink-2);
+    max-width: 46ch;
+  }
+
+  .ledger {
+    display: grid;
+    border-top: 1px solid var(--line-strong);
+  }
+
+  .ledger__row {
+    position: relative;
+    display: grid;
+    grid-template-columns: 44px minmax(0, 1fr);
+    gap: clamp(16px, 2.4vw, 32px);
+    padding-block: clamp(28px, 3.6vw, 48px);
+  }
+
+  .ledger__rule {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 1px;
+    background: var(--line-strong);
+  }
+
+  .ledger__rule::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: var(--green);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 1s var(--ease-out);
+  }
+
+  .ledger__tick svg {
+    width: 34px;
+    height: 34px;
+    margin-top: 4px;
+  }
+
+  .ledger__box {
+    fill: var(--card);
+    stroke: var(--line-strong);
+    stroke-width: 1.4;
+    transition:
+      fill 0.5s ease,
+      stroke 0.5s ease;
+  }
+
+  .ledger__check {
+    fill: none;
+    stroke: #fff;
+    stroke-width: 2.4;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    stroke-dasharray: 1;
+    stroke-dashoffset: 0;
+  }
+
+  .ledger__body {
+    display: grid;
+    gap: 10px;
+  }
+
+  .ledger__title {
+    font-size: clamp(1.45rem, 1.1rem + 1.2vw, 2.1rem);
+    font-weight: 450;
+  }
+
+  .ledger__text {
+    color: var(--ink-2);
+    max-width: 56ch;
+  }
+
+  /* Static/default state: every row reads as "checked". Script switches to
+     the scroll-driven state only when motion is allowed. */
+  .ledger__row .ledger__box {
+    fill: var(--green);
+    stroke: var(--green);
+  }
+
+  .ledger--live .ledger__row .ledger__box {
+    fill: var(--card);
+    stroke: var(--line-strong);
+  }
+
+  .ledger--live .ledger__row .ledger__check {
+    stroke-dashoffset: 1;
+    transition: stroke-dashoffset 0.6s var(--ease-out) 0.15s;
+  }
+
+  .ledger--live .ledger__row .ledger__title,
+  .ledger--live .ledger__row .ledger__text {
+    opacity: 0.45;
+    transition: opacity 0.6s ease;
+  }
+
+  .ledger--live .ledger__row.is-active .ledger__box {
+    fill: var(--green);
+    stroke: var(--green);
+  }
+
+  .ledger--live .ledger__row.is-active .ledger__check {
+    stroke-dashoffset: 0;
+  }
+
+  .ledger--live .ledger__row.is-active .ledger__title,
+  .ledger--live .ledger__row.is-active .ledger__text {
+    opacity: 1;
+  }
+
+  .ledger--live .ledger__row.is-active .ledger__rule::after {
+    transform: scaleX(1);
+  }
+
+  @media (max-width: 900px) {
+    .importance__grid {
+      grid-template-columns: minmax(0, 1fr);
+    }
+
+    .importance__sticky {
+      position: static;
+    }
+  }
+</style>

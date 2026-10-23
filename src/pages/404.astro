@@ -1,0 +1,21 @@
+---
+import Base from '../layouts/Base.astro';
+import Logo from '../components/Logo.astro';
+import Icon from '../components/Icon.astro';
+import { business } from '../data/site';
+---
+
+<Base title="Էջը չի գտնվել | In Time" path="/404/" noindex>
+  <main id="main" class="simple-page">
+    <div class="wrap simple-page__inner">
+      <a href="/" class="simple-page__logo" aria-label="In Time Accounting Centre — գլխավոր"><Logo eager /></a>
+      <p class="eyebrow">404</p>
+      <h1>Այս էջը չի գտնվել</h1>
+      <p>Հնարավոր է՝ հղումը սխալ է կամ էջը տեղափոխվել է։ Վերադարձեք գլխավոր էջ կամ կապվեք մեզ հետ։</p>
+      <div class="simple-page__ctas">
+        <a class="btn btn--primary" href="/"><span>Գլխավոր էջ</span><Icon name="arrow" /></a>
+        <a class="btn btn--ghost" href={`tel:${business.phones[0].tel}`}><Icon name="phone" /><span>{business.phones[0].display}</span></a>
+      </div>
+    </div>
+  </main>
+</Base>

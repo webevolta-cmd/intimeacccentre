@@ -1,0 +1,321 @@
+---
+import Icon from './Icon.astro';
+import { trust } from '../data/site';
+const [founded, ...others] = trust.facts;
+---
+
+<section class="section trust" id="why-us" aria-labelledby="trust-title">
+  <div class="wrap">
+    <div class="section-head">
+      <p class="eyebrow">{trust.eyebrow}</p>
+      <h2 id="trust-title" data-split>{trust.title}</h2>
+      <p data-reveal>{trust.intro}</p>
+    </div>
+
+    <div class="trust__grid">
+      <article class="trust__feature" data-reveal>
+        <p class="trust__year" aria-hidden="true" data-year>
+          <span>{founded.figure}</span>
+        </p>
+        <div class="trust__feature-body">
+          <h3>{founded.title}</h3>
+          <p>{founded.text}</p>
+        </div>
+      </article>
+
+      <ul class="trust__facts" role="list">
+        {
+          others.map((f) => (
+            <li class="trust__fact" data-reveal>
+              <span class="trust__fact-icon">
+                <Icon name={f.icon as 'certificate' | 'team' | 'shield'} />
+              </span>
+              <div>
+                <h3>{f.title}</h3>
+                <p>{f.text}</p>
+              </div>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+
+    <div class="questions" aria-labelledby="questions-title">
+      <div class="questions__head">
+        <h3 id="questions-title" class="questions__title" data-split>{trust.questions.title}</h3>
+        <p data-reveal>{trust.questions.intro}</p>
+      </div>
+      <ol class="questions__list" role="list">
+        {
+          trust.questions.items.map((item, i) => (
+            <li class="question" data-reveal>
+              <span class="question__num" aria-hidden="true">
+                {i + 1}
+              </span>
+              <p class="question__q">{item.q}</p>
+              <p class="question__why">{item.why}</p>
+              <div class="question__answer-wrap">
+                <button
+                  type="button"
+                  class="question__toggle"
+                  aria-expanded="false"
+                  aria-controls={`q-answer-${i}`}
+                  data-question-toggle
+                >
+                  <span>In Time-ի պատասխանը</span>
+                  <Icon name="plus" />
+                </button>
+                <div class="question__answer" id={`q-answer-${i}`} data-question-answer>
+                  <div>
+                    <p>{item.answer}</p>
+                  </div>
+                </div>
+              </div>
+            </li>
+          ))
+        }
+      </ol>
+    </div>
+  </div>
+</section>
+
+<style is:global>
+  .trust__grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.25fr);
+    gap: clamp(20px, 3vw, 40px);
+    align-items: stretch;
+  }
+
+  .trust__feature {
+    position: relative;
+    display: grid;
+    align-content: space-between;
+    gap: 28px;
+    padding: clamp(26px, 3.6vw, 48px);
+    background: var(--brand-gradient);
+    color: #fff;
+    border-radius: var(--radius-leaf-lg);
+    overflow: hidden;
+    min-height: 380px;
+  }
+
+  .trust__feature::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(255, 255, 255, 0.07) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255, 255, 255, 0.07) 1px, transparent 1px);
+    background-size: 36px 36px;
+    pointer-events: none;
+  }
+
+  .trust__year {
+    position: relative;
+    z-index: 1;
+    font-family: var(--f-display);
+    font-size: clamp(5rem, 3rem + 7vw, 9.5rem);
+    font-weight: 300;
+    font-stretch: 80%;
+    line-height: 0.9;
+    letter-spacing: -0.03em;
+    font-variant-numeric: lining-nums;
+  }
+
+  .trust__feature-body {
+    position: relative;
+    z-index: 1;
+    display: grid;
+    gap: 10px;
+    max-width: 34ch;
+  }
+
+  .trust__feature-body h3 {
+    font-size: var(--t-h3);
+    color: #fff;
+  }
+
+  .trust__feature-body p {
+    color: rgba(255, 255, 255, 0.82);
+  }
+
+  .trust__facts {
+    display: grid;
+    gap: 0;
+    border-top: 1px solid var(--line-strong);
+  }
+
+  .trust__fact {
+    display: grid;
+    grid-template-columns: 56px minmax(0, 1fr);
+    gap: 20px;
+    padding-block: clamp(20px, 2.6vw, 30px);
+    border-bottom: 1px solid var(--line-strong);
+  }
+
+  .trust__fact-icon {
+    display: grid;
+    place-items: center;
+    width: 56px;
+    height: 56px;
+    border-radius: var(--radius-leaf-sm);
+    background: var(--mint-soft);
+    color: var(--green-deep);
+  }
+
+  .trust__fact-icon .icon {
+    width: 28px;
+    height: 28px;
+  }
+
+  .trust__fact h3 {
+    font-size: var(--t-h3);
+    margin-bottom: 6px;
+  }
+
+  .trust__fact p {
+    color: var(--ink-2);
+  }
+
+  /* Three questions */
+  .questions {
+    margin-top: clamp(64px, 8vw, 120px);
+  }
+
+  .questions__head {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: 16px 48px;
+    align-items: end;
+    margin-bottom: 32px;
+  }
+
+  .questions__title {
+    font-size: clamp(1.6rem, 1.2rem + 1.6vw, 2.5rem);
+  }
+
+  .questions__head p {
+    color: var(--ink-2);
+    font-size: var(--t-lead);
+  }
+
+  .questions__list {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: clamp(14px, 2vw, 24px);
+  }
+
+  .question {
+    display: grid;
+    grid-template-rows: auto auto 1fr auto;
+    gap: 14px;
+    padding: clamp(22px, 2.6vw, 32px);
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-leaf);
+    transition:
+      transform 0.5s var(--ease-out),
+      box-shadow 0.5s ease;
+  }
+
+  @media (hover: hover) {
+    .question:hover {
+      transform: translateY(-4px);
+      box-shadow: var(--shadow-soft);
+    }
+  }
+
+  .question__num {
+    font-family: var(--f-display);
+    font-size: 2.6rem;
+    line-height: 1;
+    font-weight: 300;
+    color: var(--green);
+  }
+
+  .question__q {
+    font-family: var(--f-display);
+    font-stretch: 87.5%;
+    font-size: clamp(1.15rem, 1.05rem + 0.4vw, 1.35rem);
+    line-height: 1.3;
+  }
+
+  .question__why {
+    font-size: var(--t-small);
+    color: var(--muted);
+  }
+
+  .question__answer-wrap {
+    border-top: 1px solid var(--line);
+    padding-top: 6px;
+  }
+
+  .question__toggle {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    min-height: 48px;
+    padding: 8px 0;
+    background: none;
+    border: 0;
+    font-weight: 600;
+    color: var(--green-ink);
+    cursor: pointer;
+    text-align: left;
+  }
+
+  .question__toggle .icon {
+    transition: transform 0.45s var(--ease-out);
+  }
+
+  .question__toggle[aria-expanded='true'] .icon {
+    transform: rotate(45deg);
+  }
+
+  .question__answer {
+    display: grid;
+    grid-template-rows: 1fr;
+    transition: grid-template-rows 0.5s var(--ease-out);
+  }
+
+  .question__answer > div {
+    overflow: hidden;
+  }
+
+  .question__answer p {
+    padding: 4px 0 6px;
+    padding-left: 14px;
+    border-left: 2px solid var(--green);
+    font-weight: 500;
+  }
+
+  .js .question__answer {
+    grid-template-rows: 0fr;
+  }
+
+  .js .question__answer.is-open {
+    grid-template-rows: 1fr;
+  }
+
+  .js .question__answer:not(.is-open) > div {
+    visibility: hidden;
+    transition: visibility 0s linear 0.5s;
+  }
+
+  @media (max-width: 960px) {
+    .trust__grid,
+    .questions__head {
+      grid-template-columns: minmax(0, 1fr);
+    }
+
+    .questions__list {
+      grid-template-columns: minmax(0, 1fr);
+    }
+
+    .trust__feature {
+      min-height: 300px;
+    }
+  }
+</style>

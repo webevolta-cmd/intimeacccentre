@@ -1,0 +1,284 @@
+---
+import Icon from './Icon.astro';
+import { insights, business } from '../data/site';
+
+const fmt = new Intl.DateTimeFormat('hy-AM', { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'Asia/Yerevan' });
+const formatDate = (iso: string) => {
+  try {
+    return fmt.format(new Date(`${iso}T12:00:00+04:00`));
+  } catch {
+    return iso;
+  }
+};
+---
+
+<section class="section insights" id="insights" aria-labelledby="insights-title">
+  <div class="wrap">
+    <div class="insights__head">
+      <div class="section-head">
+        <p class="eyebrow">{insights.eyebrow}</p>
+        <h2 id="insights-title" data-split>{insights.title}</h2>
+        <p data-reveal>{insights.intro}</p>
+      </div>
+      <div class="insights__controls">
+        <button class="round-btn" type="button" data-carousel-prev aria-label="Նախորդ տեսանյութերը" aria-controls="insights-track">
+          <Icon name="arrow-left" />
+        </button>
+        <button class="round-btn" type="button" data-carousel-next aria-label="Հաջորդ տեսանյութերը" aria-controls="insights-track">
+          <Icon name="arrow" />
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div class="insights__viewport">
+    <ul class="insights__track" id="insights-track" role="list" data-carousel tabindex="0" aria-label="Instagram-ի տեսանյութեր">
+      {
+        insights.items.map((item) => (
+          <li class="insight" data-reveal>
+            <a class="insight__link" href={item.url} target="_blank" rel="noopener">
+              <span class="insight__media">
+                <picture>
+                  <source
+                    type="image/webp"
+                    srcset={`/images/insights/${item.id}-360.webp 360w, /images/insights/${item.id}-540.webp 540w`}
+                    sizes="(max-width: 600px) 72vw, 300px"
+                  />
+                  <img
+                    src={`/images/insights/${item.id}-540.jpg`}
+                    alt=""
+                    width="540"
+                    height="960"
+                    loading="lazy"
+                    decoding="async"
+                  />
+                </picture>
+                <span class="insight__play" aria-hidden="true">
+                  <Icon name="play" />
+                </span>
+              </span>
+              <span class="insight__body">
+                <time datetime={item.date}>{formatDate(item.date)}</time>
+                <span class="insight__title">{item.title}</span>
+                <span class="insight__text">{item.text}</span>
+                <span class="insight__cta">
+                  Դիտել Instagram-ում
+                  <Icon name="arrow-up-right" />
+                </span>
+              </span>
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+
+  <div class="wrap insights__foot">
+    <a class="link-arrow" href={business.social.instagram} target="_blank" rel="noopener">
+      <Icon name="instagram" />
+      {business.social.instagramHandle}
+    </a>
+  </div>
+</section>
+
+<style is:global>
+  .insights {
+    overflow: clip;
+  }
+
+  .insights__head {
+    display: flex;
+    justify-content: space-between;
+    align-items: end;
+    gap: 24px;
+  }
+
+  .insights__controls {
+    display: flex;
+    gap: 10px;
+    margin-bottom: clamp(40px, 5vw, 72px);
+  }
+
+  .round-btn {
+    display: grid;
+    place-items: center;
+    width: 52px;
+    height: 52px;
+    border-radius: 50%;
+    border: 1.5px solid var(--line-strong);
+    background: var(--card);
+    color: var(--ink);
+    cursor: pointer;
+    transition:
+      background-color 0.3s ease,
+      color 0.3s ease,
+      border-color 0.3s ease,
+      transform 0.4s var(--ease-out);
+  }
+
+  .round-btn:hover:not(:disabled) {
+    background: var(--ink);
+    border-color: var(--ink);
+    color: #fff;
+  }
+
+  .round-btn:disabled {
+    opacity: 0.35;
+    cursor: default;
+  }
+
+  .insights__viewport {
+    position: relative;
+  }
+
+  .insights__track {
+    --edge: max(var(--gutter), calc((100vw - var(--container)) / 2));
+    display: grid;
+    grid-auto-flow: column;
+    grid-auto-columns: clamp(250px, 72vw, 312px);
+    gap: clamp(14px, 2vw, 24px);
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    scroll-snap-type: x mandatory;
+    scroll-padding-inline: var(--edge);
+    padding-inline: var(--edge);
+    padding-block: 6px 24px;
+    scrollbar-width: none;
+    cursor: grab;
+  }
+
+  .insights__track::-webkit-scrollbar {
+    display: none;
+  }
+
+  .insights__track.is-dragging {
+    cursor: grabbing;
+    scroll-snap-type: none;
+  }
+
+  .insights__track.is-dragging a {
+    pointer-events: none;
+  }
+
+  .insight {
+    scroll-snap-align: start;
+  }
+
+  .insight__link {
+    display: grid;
+    gap: 16px;
+    height: 100%;
+    text-decoration: none;
+    border-radius: var(--radius-leaf);
+  }
+
+  .insight__media {
+    position: relative;
+    display: block;
+    aspect-ratio: 9 / 13;
+    overflow: hidden;
+    border-radius: var(--radius-leaf);
+    background: var(--paper-2);
+  }
+
+  .insight__media img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center 28%;
+    transition: transform 0.9s var(--ease-out);
+  }
+
+  .insight__media::after {
+    content: '';
+    position: absolute;
+    inset: 55% 0 0;
+    background: linear-gradient(transparent, rgba(13, 21, 32, 0.55));
+    pointer-events: none;
+  }
+
+  .insight__play {
+    position: absolute;
+    left: 16px;
+    bottom: 16px;
+    z-index: 1;
+    display: grid;
+    place-items: center;
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.92);
+    color: var(--ink);
+    transition:
+      transform 0.5s var(--ease-out),
+      background-color 0.3s ease,
+      color 0.3s ease;
+  }
+
+  .insight__play .icon {
+    width: 20px;
+    height: 20px;
+    margin-left: 2px;
+    fill: currentColor;
+  }
+
+  @media (hover: hover) {
+    .insight__link:hover .insight__media img {
+      transform: scale(1.05);
+    }
+
+    .insight__link:hover .insight__play {
+      transform: scale(1.1);
+      background: var(--green);
+      color: #fff;
+    }
+  }
+
+  .insight__body {
+    display: grid;
+    gap: 8px;
+  }
+
+  .insight__body time {
+    font-size: var(--t-label);
+    font-weight: 600;
+    font-stretch: 75%;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  .insight__title {
+    font-family: var(--f-display);
+    font-stretch: 87.5%;
+    font-size: 1.2rem;
+    line-height: 1.3;
+    color: var(--ink);
+  }
+
+  .insight__text {
+    font-size: var(--t-small);
+    color: var(--ink-2);
+    line-height: 1.55;
+  }
+
+  .insight__cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: 4px;
+    font-size: var(--t-small);
+    font-weight: 600;
+    color: var(--green-ink);
+  }
+
+  .insights__foot {
+    margin-top: 12px;
+  }
+
+  @media (max-width: 640px) {
+    .insights__controls {
+      display: none;
+    }
+  }
+</style>

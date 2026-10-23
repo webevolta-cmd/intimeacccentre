@@ -1,0 +1,133 @@
+---
+import Icon from './Icon.astro';
+import paths from '../data/logo-paths.json';
+import { finalCta, business, hero } from '../data/site';
+const phone = business.phones[0];
+const ic = paths.icon as Record<string, string[]>;
+const j = (a: string[]) => a.join('');
+---
+
+<section class="final" aria-labelledby="final-title" data-final>
+  <!-- The two blocks of the In Time mark part like doors as the section scrolls in -->
+  <div class="final__mark-wrap" aria-hidden="true">
+  <svg class="final__mark" viewBox="12 106 86 106">
+    <defs>
+      <linearGradient id="fin-t" x1="0" y1="0" x2="1" y2="0">
+        <stop offset="0" stop-color="#2A3A4E"></stop>
+        <stop offset="1" stop-color="#22B964"></stop>
+      </linearGradient>
+      <linearGradient id="fin-b" x1="0" y1="0" x2="1" y2="0">
+        <stop offset="0" stop-color="#1B2A3B"></stop>
+        <stop offset=".8" stop-color="#28513F"></stop>
+        <stop offset=".805" stop-color="#22B964"></stop>
+        <stop offset="1" stop-color="#3CCB78"></stop>
+      </linearGradient>
+    </defs>
+    <g data-final-leaf="top">
+      <path fill="#80CCA0" fill-opacity=".35" d={j(ic.topU)}></path>
+      <path fill="url(#fin-t)" d={j(ic.topI)}></path>
+    </g>
+    <g data-final-leaf="bottom">
+      <path fill="#8E9AA6" fill-opacity=".35" d={j(ic.botU)}></path>
+      <path fill="url(#fin-b)" d={j(ic.botI)}></path>
+    </g>
+  </svg>
+  </div>
+  <div class="final__veil" aria-hidden="true"></div>
+
+  <div class="wrap final__inner">
+    <p class="eyebrow">{business.address.streetShort} · {business.hours.short}</p>
+    <h2 id="final-title" class="final__title" data-split>{finalCta.title}</h2>
+    <p class="final__text" data-reveal>{finalCta.text}</p>
+    <div class="final__ctas" data-reveal>
+      <a class="btn btn--light" href="#contact" data-magnetic>
+        <span>{hero.primaryCta}</span>
+        <Icon name="arrow" />
+      </a>
+      <a class="btn btn--outline-light" href={`tel:${phone.tel}`} data-magnetic>
+        <Icon name="phone" />
+        <span>{phone.display}</span>
+      </a>
+    </div>
+  </div>
+</section>
+
+<style is:global>
+  .final {
+    position: relative;
+    padding-block: clamp(110px, 13vw, 200px);
+    background: var(--night);
+    color: var(--night-text);
+    overflow: clip;
+    text-align: center;
+    isolation: isolate;
+  }
+
+  .final__mark-wrap {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: min(64vw, 520px);
+    transform: translate(-50%, -50%);
+    opacity: 0.32;
+    z-index: -2;
+  }
+
+  .final__mark {
+    width: 100%;
+    height: auto;
+    overflow: visible;
+  }
+
+  .final__veil {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background: radial-gradient(ellipse 50% 45% at 50% 50%, rgba(13, 21, 32, 0.78), rgba(13, 21, 32, 0.25) 70%, transparent);
+  }
+
+  .final .eyebrow {
+    color: var(--mint);
+  }
+
+  .final__inner {
+    position: relative;
+    display: grid;
+    justify-items: center;
+    gap: 22px;
+  }
+
+  .final__title {
+    font-size: clamp(2.2rem, 1.3rem + 4vw, 4.8rem);
+    color: #fff;
+    max-width: 16ch;
+  }
+
+  .final__text {
+    max-width: 52ch;
+    color: var(--night-muted);
+    font-size: var(--t-lead);
+  }
+
+  .final__ctas {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 12px;
+    margin-top: 10px;
+  }
+
+  .final__ctas .btn--outline-light span {
+    font-variant-numeric: tabular-nums;
+  }
+
+  @media (max-width: 520px) {
+    .final__ctas .btn {
+      flex: 1 1 100%;
+    }
+
+    .final__mark-wrap {
+      width: 90vw;
+    }
+  }
+</style>

@@ -1,0 +1,25 @@
+---
+/**
+ * The In Time Accounting Centre logo (vector traced from the official logo;
+ * see RESEARCH.md → Brand assets). Served as a cached SVG file.
+ */
+interface Props {
+  variant?: 'default' | 'on-dark';
+  class?: string;
+  title?: string;
+  eager?: boolean;
+}
+
+const { variant = 'default', class: className = '', title = 'In Time Accounting Centre', eager = false } = Astro.props;
+const src = variant === 'on-dark' ? '/images/brand/logo-on-dark.svg' : '/images/brand/logo.svg';
+---
+
+<img
+  class={`logo ${className}`}
+  src={src}
+  alt={title}
+  width="380"
+  height="196"
+  loading={eager ? 'eager' : 'lazy'}
+  decoding="async"
+/>

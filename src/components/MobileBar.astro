@@ -1,0 +1,80 @@
+---
+import Icon from './Icon.astro';
+import { business, whatsappLink } from '../data/site';
+const phone = business.phones[0];
+---
+
+<nav class="mobile-bar" aria-label="Արագ կապ" data-mobile-bar>
+  <a href={`tel:${phone.tel}`} class="mobile-bar__item">
+    <Icon name="phone" />
+    <span>Զանգ</span>
+  </a>
+  <a href={whatsappLink()} target="_blank" rel="noopener" class="mobile-bar__item">
+    <Icon name="whatsapp" />
+    <span>WhatsApp</span>
+  </a>
+  <a href="#contact" class="mobile-bar__item mobile-bar__item--primary">
+    <Icon name="chat" />
+    <span>Հայտ</span>
+  </a>
+</nav>
+
+<style is:global>
+  .mobile-bar {
+    display: none;
+  }
+
+  @media (max-width: 860px) {
+    .mobile-bar {
+      position: fixed;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      z-index: 40;
+      display: grid;
+      grid-template-columns: 1fr 1fr 1.2fr;
+      gap: 8px;
+      padding: 10px max(12px, env(safe-area-inset-right, 0px)) calc(10px + env(safe-area-inset-bottom, 0px))
+        max(12px, env(safe-area-inset-left, 0px));
+      background: rgba(242, 244, 240, 0.92);
+      backdrop-filter: saturate(1.4) blur(14px);
+      -webkit-backdrop-filter: saturate(1.4) blur(14px);
+      box-shadow: 0 -1px 0 var(--line);
+      transition: transform 0.45s var(--ease-out);
+    }
+
+    .mobile-bar.is-hidden {
+      transform: translateY(110%);
+    }
+
+    .mobile-bar__item {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      min-height: 50px;
+      border-radius: var(--radius-leaf-sm);
+      border: 1.5px solid var(--line-strong);
+      background: var(--card);
+      font-weight: 600;
+      font-size: 0.95rem;
+      text-decoration: none;
+    }
+
+    .mobile-bar__item .icon {
+      width: 20px;
+      height: 20px;
+      color: var(--green-ink);
+    }
+
+    .mobile-bar__item--primary {
+      background: var(--green-ink);
+      border-color: var(--green-ink);
+      color: #fff;
+    }
+
+    .mobile-bar__item--primary .icon {
+      color: #fff;
+    }
+  }
+</style>

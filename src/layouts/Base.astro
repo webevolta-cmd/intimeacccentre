@@ -1,0 +1,120 @@
+---
+import '../styles/global.css';
+import { business, seo } from '../data/site';
+import { allowIndexing, isArtifactBuild } from '../lib/indexing';
+
+interface Props {
+  title?: string;
+  description?: string;
+  path?: string;
+  noindex?: boolean;
+  structuredData?: boolean;
+}
+
+const {
+  title = seo.title,
+  description = seo.description,
+  path = '/',
+  noindex = false,
+  structuredData = false,
+} = Astro.props;
+
+const site = Astro.site ?? new URL('https://intimeacccentre.netlify.app');
+const canonical = new URL(path, site).href;
+const ogImage = new URL(seo.ogImage, site).href;
+const robots = allowIndexing && !noindex ? 'index, follow, max-image-preview:large' : 'noindex, nofollow';
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'AccountingService',
+  '@id': `${new URL('/', site).href}#business`,
+  name: business.name,
+  alternateName: [business.nameHy, business.legalNameHy],
+  description,
+  url: new URL('/', site).href,
+  logo: new URL('/images/brand/logo.png', site).href,
+  image: ogImage,
+  telephone: business.phones.map((p) => p.tel),
+  foundingDate: String(business.foundingYear),
+  address: {
+    '@type': 'PostalAddress',
+    streetAddress: business.address.street,
+    addressLocality: business.address.city,
+    postalCode: business.address.postalCode,
+    addressCountry: business.address.country,
+  },
+  geo: {
+    '@type': 'GeoCoordinates',
+    latitude: business.address.lat,
+    longitude: business.address.lng,
+  },
+  hasMap: business.maps.google,
+  openingHoursSpecification: business.hours.schema.map((h) => ({
+    '@type': 'OpeningHoursSpecification',
+    dayOfWeek: h.days,
+    opens: h.opens,
+    closes: h.closes,
+  })),
+  areaServed: { '@type': 'City', name: 'Yerevan' },
+  knowsLanguage: 'hy',
+  sameAs: [business.social.instagram, business.social.facebook],
+};
+---
+
+<!doctype html>
+<html lang="hy" class="no-js">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <meta name="robots" content={robots} />
+    <link rel="canonical" href={canonical} />
+    <meta name="theme-color" content="#f2f4f0" />
+    <meta name="format-detection" content="telephone=no" />
+
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="icon" href="/favicon-32.png" sizes="32x32" type="image/png" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="manifest" href="/site.webmanifest" />
+
+    <link rel="preload" href="/fonts/noto-serif-armenian-armenian.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="/fonts/noto-sans-armenian-armenian.woff2" as="font" type="font/woff2" crossorigin />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:locale" content="hy_AM" />
+    <meta property="og:site_name" content={business.name} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content={seo.ogImageAlt} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImage} />
+
+    {structuredData && <script type="application/ld+json" is:inline set:html={JSON.stringify(jsonLd)} />}
+
+    <script is:inline>
+      document.documentElement.classList.remove('no-js');
+      document.documentElement.classList.add('js');
+      // If the animation script has not started within 4 s, show everything statically.
+      window.setTimeout(function () {
+        if (!document.documentElement.classList.contains('motion-ready')) {
+          document.documentElement.classList.add('motion-off');
+        }
+      }, 4000);
+    </script>
+    {isArtifactBuild && <script is:inline>window.__INTIME_PREVIEW__ = true;</script>}
+  </head>
+  <body>
+    <a class="skip-link" href="#main">Անցնել հիմնական բովանդակությանը</a>
+    <slot />
+    <script>
+      import '../scripts/main.ts';
+    </script>
+  </body>
+</html>

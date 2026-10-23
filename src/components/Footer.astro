@@ -1,0 +1,180 @@
+---
+import Logo from './Logo.astro';
+import Icon from './Icon.astro';
+import { business, nav, whatsappLink } from '../data/site';
+const year = new Date().getFullYear();
+---
+
+<footer class="footer">
+  <div class="wrap footer__grid">
+    <div class="footer__brand">
+      <Logo variant="on-dark" class="footer__logo" />
+      <p>{business.nameHy}</p>
+      <p class="footer__legal">{business.legalNameHy}</p>
+    </div>
+
+    <nav class="footer__col" aria-label="Կայքի բաժիններ">
+      <p class="footer__label">Բաժիններ</p>
+      <ul role="list">
+        {nav.map((n) => <li><a href={n.href}>{n.label}</a></li>)}
+      </ul>
+    </nav>
+
+    <div class="footer__col">
+      <p class="footer__label">Կապ</p>
+      <ul role="list">
+        {business.phones.map((p) => <li><a href={`tel:${p.tel}`} class="footer__tel">{p.display}</a></li>)}
+        <li>
+          <a href={business.maps.google} target="_blank" rel="noopener">{business.address.city}, {business.address.streetShort}</a>
+        </li>
+        <li class="footer__muted">{business.hours.short}</li>
+      </ul>
+    </div>
+
+    <div class="footer__col">
+      <p class="footer__label">Հետևեք մեզ</p>
+      <div class="footer__social">
+        <a href={business.social.instagram} target="_blank" rel="noopener" aria-label="Instagram"><Icon name="instagram" /></a>
+        <a href={business.social.facebook} target="_blank" rel="noopener" aria-label="Facebook"><Icon name="facebook" /></a>
+        <a href={whatsappLink()} target="_blank" rel="noopener" aria-label="WhatsApp"><Icon name="whatsapp" /></a>
+      </div>
+    </div>
+  </div>
+  <div class="wrap">
+    <div class="footer__bottom">
+      <p>© {year} {business.name}</p>
+      <a href="#top" class="footer__top">
+        Վերև
+        <Icon name="arrow" class="footer__top-icon" />
+      </a>
+    </div>
+  </div>
+</footer>
+
+<style is:global>
+  .footer {
+    background: var(--night);
+    color: var(--night-text);
+    border-top: 1px solid var(--night-line);
+    padding-top: clamp(56px, 7vw, 96px);
+  }
+
+  .footer__grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1.4fr) repeat(3, minmax(0, 1fr));
+    gap: 40px;
+  }
+
+  .footer__brand {
+    display: grid;
+    gap: 12px;
+    align-content: start;
+    color: var(--night-muted);
+  }
+
+  .footer__logo {
+    width: 160px;
+    margin-bottom: 8px;
+  }
+
+  .footer__legal {
+    font-size: var(--t-small);
+  }
+
+  .footer__label {
+    font-size: var(--t-label);
+    font-weight: 650;
+    font-stretch: 75%;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--mint);
+    margin-bottom: 14px;
+  }
+
+  .footer__col ul {
+    display: grid;
+    gap: 10px;
+  }
+
+  .footer__col a {
+    color: var(--night-text);
+    text-decoration: none;
+    transition: color 0.25s ease;
+  }
+
+  .footer__col a:hover {
+    color: var(--mint);
+  }
+
+  .footer__tel {
+    font-variant-numeric: tabular-nums;
+    font-weight: 600;
+  }
+
+  .footer__muted {
+    color: var(--night-muted);
+  }
+
+  .footer__social {
+    display: flex;
+    gap: 8px;
+  }
+
+  .footer__social a {
+    display: grid;
+    place-items: center;
+    width: 46px;
+    height: 46px;
+    border-radius: var(--radius-leaf-sm);
+    border: 1.5px solid var(--night-line);
+  }
+
+  .footer__social a:hover {
+    border-color: var(--mint);
+  }
+
+  .footer__social .icon {
+    width: 22px;
+    height: 22px;
+  }
+
+  .footer__bottom {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+    margin-top: clamp(48px, 6vw, 80px);
+    padding-block: 24px;
+    border-top: 1px solid var(--night-line);
+    font-size: var(--t-small);
+    color: var(--night-muted);
+  }
+
+  .footer__top {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--night-text);
+    text-decoration: none;
+  }
+
+  .footer__top-icon {
+    transform: rotate(-90deg);
+  }
+
+  @media (max-width: 900px) {
+    .footer__grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .footer__brand {
+      grid-column: 1 / -1;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .footer__grid {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+</style>

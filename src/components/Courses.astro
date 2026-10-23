@@ -1,0 +1,167 @@
+---
+import Icon from './Icon.astro';
+import { courses, inquiryTopics, business } from '../data/site';
+const topic = inquiryTopics.find((t) => t.service === 'courses')?.value ?? '';
+const phone = business.phones[1];
+---
+
+<section class="courses" id="courses" aria-labelledby="courses-title">
+  <div class="wrap">
+    <div class="courses__band">
+      <div class="courses__shapes" aria-hidden="true">
+        <span class="courses__leaf courses__leaf--a" data-parallax="-0.12"></span>
+        <span class="courses__leaf courses__leaf--b" data-parallax="0.1"></span>
+      </div>
+      <div class="courses__copy">
+        <p class="eyebrow courses__eyebrow">{courses.eyebrow}</p>
+        <h2 id="courses-title" class="courses__title" data-split>{courses.title}</h2>
+        <p class="courses__text" data-reveal>{courses.text}</p>
+      </div>
+      <div class="courses__side">
+        <p class="courses__ask">Կարող եք հարցնել՝</p>
+        <ul role="list" class="courses__points">
+          {
+            courses.points.map((p) => (
+              <li data-reveal>
+                <Icon name="check" />
+                {p}
+              </li>
+            ))
+          }
+        </ul>
+        <div class="courses__ctas">
+          <a class="btn btn--light" href="#contact" data-topic={topic} data-magnetic>
+            <span>{courses.cta}</span>
+            <Icon name="arrow" />
+          </a>
+          <a class="courses__phone" href={`tel:${phone.tel}`}>
+            <Icon name="phone" />
+            {phone.display}
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style is:global>
+  .courses {
+    padding-block: clamp(24px, 4vw, 48px);
+  }
+
+  .courses__band {
+    position: relative;
+    display: grid;
+    grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr);
+    gap: clamp(28px, 5vw, 80px);
+    align-items: end;
+    padding: clamp(32px, 6vw, 88px);
+    background: var(--brand-gradient);
+    color: #fff;
+    border-radius: var(--radius-leaf-lg);
+    overflow: hidden;
+    isolation: isolate;
+  }
+
+  .courses__shapes {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+  }
+
+  .courses__leaf {
+    position: absolute;
+    display: block;
+    border-radius: 6px 120px 6px 120px;
+    background: rgba(255, 255, 255, 0.07);
+  }
+
+  .courses__leaf--a {
+    width: 46%;
+    aspect-ratio: 1 / 1.1;
+    right: -8%;
+    top: -30%;
+  }
+
+  .courses__leaf--b {
+    width: 30%;
+    aspect-ratio: 1 / 1.1;
+    right: 14%;
+    bottom: -45%;
+    background: rgba(19, 29, 43, 0.25);
+  }
+
+  .courses__copy {
+    display: grid;
+    gap: 18px;
+  }
+
+  .courses__eyebrow {
+    color: var(--mint);
+  }
+
+  .courses__title {
+    font-size: var(--t-h2);
+    color: #fff;
+  }
+
+  .courses__text {
+    color: rgba(255, 255, 255, 0.86);
+    font-size: var(--t-lead);
+    max-width: 54ch;
+  }
+
+  .courses__side {
+    display: grid;
+    gap: 16px;
+  }
+
+  .courses__ask {
+    font-weight: 600;
+  }
+
+  .courses__points {
+    display: grid;
+    gap: 10px;
+  }
+
+  .courses__points li {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.18);
+  }
+
+  .courses__points .icon {
+    color: var(--mint);
+  }
+
+  .courses__ctas {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 14px 24px;
+    margin-top: 10px;
+  }
+
+  .courses__phone {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 600;
+    text-decoration: none;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .courses__phone:hover {
+    color: var(--mint);
+  }
+
+  @media (max-width: 900px) {
+    .courses__band {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+</style>

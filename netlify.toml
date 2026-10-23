@@ -1,0 +1,51 @@
+# Netlify configuration for the In Time Accounting Centre website.
+# Connecting this repository to Netlify is enough to build and publish it.
+
+[build]
+  command = "npm run build"
+  publish = "dist"
+
+[build.environment]
+  NODE_VERSION = "22"
+  ASTRO_TELEMETRY_DISABLED = "1"
+
+# Deploy previews and branch deploys are never indexed by search engines.
+# (Production indexing is decided in src/lib/indexing.ts.)
+[context.deploy-preview.environment]
+  NOINDEX = "true"
+
+[context.branch-deploy.environment]
+  NOINDEX = "true"
+
+# ---------- Headers ----------
+
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+    X-Frame-Options = "SAMEORIGIN"
+    Permissions-Policy = "camera=(), microphone=(), geolocation=(), payment=(), usb=()"
+
+# Fingerprinted build assets never change.
+[[headers]]
+  for = "/_astro/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+[[headers]]
+  for = "/fonts/*"
+  [headers.values]
+    Cache-Control = "public, max-age=2592000"
+
+[[headers]]
+  for = "/images/*"
+  [headers.values]
+    Cache-Control = "public, max-age=604800"
+
+# ---------- Redirects ----------
+
+[[redirects]]
+  from = "/index.html"
+  to = "/"
+  status = 301

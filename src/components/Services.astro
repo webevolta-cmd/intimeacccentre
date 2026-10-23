@@ -1,0 +1,378 @@
+---
+import Icon from './Icon.astro';
+import { services, inquiryTopics, business } from '../data/site';
+
+const icons = { outsourcing: 'documents', tax: 'scale', risk: 'search', courses: 'book' } as const;
+const topicFor = (key: string) => inquiryTopics.find((t) => t.service === key)?.value ?? '';
+const phone = business.phones[0];
+---
+
+<section class="section section--card services" id="services" aria-labelledby="services-title">
+  <div class="wrap">
+    <div class="section-head">
+      <p class="eyebrow">Ծառայություններ</p>
+      <h2 id="services-title" data-split>Ինչով կարող ենք օգնել ձեր բիզնեսին</h2>
+      <p data-reveal>
+        Աշխատանքի շրջանակը համաձայնեցնում ենք յուրաքանչյուր բիզնեսի հետ առանձին։ Ընտրեք ուղղությունը՝ մանրամասները տեսնելու համար։
+      </p>
+    </div>
+
+    <div class="svc" data-services>
+      {
+        services.map((s, i) => (
+          <>
+            <button
+              class="svc__tab"
+              type="button"
+              id={`svc-tab-${s.key}`}
+              aria-expanded="true"
+              aria-controls={`svc-panel-${s.key}`}
+              data-svc-tab={s.key}
+              data-reveal
+            >
+              <span class="svc__tab-icon">
+                <Icon name={icons[s.key]} />
+              </span>
+              <span class="svc__tab-text">
+                <span class="svc__tab-tag">{s.tag}</span>
+                <span class="svc__tab-title">{s.title}</span>
+                <span class="svc__tab-summary">{s.summary}</span>
+              </span>
+              <span class="svc__tab-indicator" aria-hidden="true">
+                <Icon name="arrow" />
+              </span>
+            </button>
+            <div
+              class="svc__panel"
+              id={`svc-panel-${s.key}`}
+              role="region"
+              aria-labelledby={`svc-tab-${s.key}`}
+              data-svc-panel={s.key}
+            >
+              <div class="svc__panel-inner">
+                <div class="svc__panel-head">
+                  <span class="svc__panel-icon" aria-hidden="true">
+                    <Icon name={icons[s.key]} />
+                  </span>
+                  <span class="svc__panel-index" aria-hidden="true">
+                    {String(i + 1).padStart(2, '0')} / {String(services.length).padStart(2, '0')}
+                  </span>
+                </div>
+                <h3 class="svc__panel-title">{s.title}</h3>
+                <dl class="svc__facts">
+                  <div>
+                    <dt>Ինչ է ներառում</dt>
+                    <dd>{s.includes}</dd>
+                  </div>
+                  <div>
+                    <dt>Ում համար է</dt>
+                    <dd>{s.audience}</dd>
+                  </div>
+                  <div>
+                    <dt>Ինչ խնդիր է լուծում</dt>
+                    <dd>{s.need}</dd>
+                  </div>
+                </dl>
+                <div class="svc__panel-cta">
+                  <a class="btn btn--primary" href="#contact" data-topic={topicFor(s.key)} data-magnetic>
+                    <span>{s.cta}</span>
+                    <Icon name="arrow" />
+                  </a>
+                  <a class="link-arrow" href={`tel:${phone.tel}`}>
+                    <Icon name="phone" />
+                    {phone.display}
+                  </a>
+                </div>
+              </div>
+            </div>
+          </>
+        ))
+      }
+    </div>
+  </div>
+</section>
+
+<style is:global>
+  .svc {
+    display: grid;
+    gap: 14px;
+  }
+
+  .svc__tab {
+    display: grid;
+    grid-template-columns: 52px minmax(0, 1fr) 28px;
+    align-items: start;
+    gap: 18px;
+    width: 100%;
+    padding: 22px 22px;
+    text-align: left;
+    background: var(--paper);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-leaf);
+    cursor: pointer;
+    transition:
+      background-color 0.35s ease,
+      border-color 0.35s ease,
+      box-shadow 0.35s ease,
+      border-radius 0.5s var(--ease-out),
+      transform 0.35s var(--ease-out);
+  }
+
+  .svc__tab:hover {
+    border-color: var(--line-strong);
+  }
+
+  .svc__tab-icon {
+    display: grid;
+    place-items: center;
+    width: 52px;
+    height: 52px;
+    border-radius: var(--radius-leaf-sm);
+    background: var(--mint-soft);
+    color: var(--green-deep);
+    transition:
+      background-color 0.35s ease,
+      color 0.35s ease;
+  }
+
+  .svc__tab-icon .icon {
+    width: 26px;
+    height: 26px;
+  }
+
+  .svc__tab-text {
+    display: grid;
+    gap: 4px;
+    min-width: 0;
+  }
+
+  .svc__tab-tag {
+    font-size: var(--t-label);
+    font-weight: 650;
+    font-stretch: 75%;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--green-ink);
+  }
+
+  .svc__tab-title {
+    font-family: var(--f-display);
+    font-stretch: 87.5%;
+    font-size: clamp(1.2rem, 1.05rem + 0.5vw, 1.45rem);
+    line-height: 1.2;
+    color: var(--ink);
+  }
+
+  .svc__tab-summary {
+    font-size: var(--t-small);
+    color: var(--muted);
+    line-height: 1.5;
+  }
+
+  .svc__tab-indicator {
+    display: grid;
+    place-items: center;
+    width: 28px;
+    height: 28px;
+    margin-top: 12px;
+    color: var(--muted);
+    transition:
+      transform 0.45s var(--ease-out),
+      color 0.3s ease;
+  }
+
+  .svc__panel {
+    min-width: 0;
+  }
+
+  .svc__panel-inner {
+    display: grid;
+    gap: 22px;
+    padding: clamp(24px, 3.5vw, 48px);
+    background: var(--night);
+    color: var(--night-text);
+    border-radius: var(--radius-leaf-lg);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .svc__panel-inner::before {
+    content: '';
+    position: absolute;
+    inset: auto -20% -45% auto;
+    width: 70%;
+    aspect-ratio: 1;
+    background: radial-gradient(circle, rgba(15, 158, 76, 0.32), transparent 65%);
+    pointer-events: none;
+  }
+
+  .svc__panel-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .svc__panel-icon {
+    display: grid;
+    place-items: center;
+    width: 64px;
+    height: 64px;
+    border-radius: var(--radius-leaf-sm);
+    background: rgba(128, 204, 160, 0.14);
+    color: var(--mint);
+  }
+
+  .svc__panel-icon .icon {
+    width: 32px;
+    height: 32px;
+  }
+
+  .svc__panel-index {
+    font-size: var(--t-label);
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    color: var(--night-muted);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .svc__panel-title {
+    font-size: clamp(1.6rem, 1.2rem + 1.4vw, 2.4rem);
+    color: #fff;
+  }
+
+  .svc__facts {
+    display: grid;
+    gap: 0;
+    border-top: 1px solid var(--night-line);
+  }
+
+  .svc__facts > div {
+    display: grid;
+    grid-template-columns: minmax(130px, 0.32fr) minmax(0, 1fr);
+    gap: 20px;
+    padding-block: 18px;
+    border-bottom: 1px solid var(--night-line);
+  }
+
+  .svc__facts dt {
+    font-size: var(--t-label);
+    font-weight: 650;
+    font-stretch: 75%;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--mint);
+    padding-top: 3px;
+  }
+
+  .svc__facts dd {
+    color: rgba(233, 240, 236, 0.86);
+    font-size: var(--t-small);
+    line-height: 1.65;
+  }
+
+  .svc__panel-cta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 14px 28px;
+    margin-top: 6px;
+    position: relative;
+  }
+
+  .svc__panel-cta .btn--primary {
+    --btn-bg: var(--green);
+  }
+
+  .svc__panel-cta .btn--primary::after {
+    background: #fff;
+  }
+
+  @media (hover: hover) {
+    .svc__panel-cta .btn--primary:hover {
+      color: var(--ink);
+    }
+  }
+
+  .svc__panel-cta .link-arrow {
+    color: var(--mint);
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* Enhanced tab layout (script adds .svc--tabs) */
+  .svc--tabs {
+    grid-template-columns: minmax(0, 0.82fr) minmax(0, 1.18fr);
+    gap: 14px clamp(24px, 3vw, 48px);
+    align-items: start;
+  }
+
+  .svc--tabs .svc__tab {
+    grid-column: 1;
+  }
+
+  .svc--tabs .svc__panel {
+    grid-column: 2;
+    grid-row: 1 / span 4;
+    position: sticky;
+    top: calc(var(--header-h) + 24px);
+  }
+
+  .svc--tabs .svc__tab[aria-expanded='true'] {
+    background: var(--card);
+    border-color: var(--green);
+    border-radius: 22px 4px 22px 4px;
+    box-shadow: var(--shadow-soft);
+  }
+
+  .svc--tabs .svc__tab[aria-expanded='true'] .svc__tab-icon {
+    background: var(--green);
+    color: #fff;
+  }
+
+  .svc--tabs .svc__tab[aria-expanded='true'] .svc__tab-indicator {
+    color: var(--green-ink);
+    transform: translateX(4px);
+  }
+
+  @media (max-width: 960px) {
+    .svc--tabs {
+      grid-template-columns: minmax(0, 1fr);
+    }
+
+    .svc--tabs .svc__tab,
+    .svc--tabs .svc__panel {
+      grid-column: 1;
+      grid-row: auto;
+      position: static;
+    }
+
+    .svc--tabs .svc__tab-indicator {
+      transform: rotate(90deg);
+    }
+
+    .svc--tabs .svc__tab[aria-expanded='true'] .svc__tab-indicator {
+      transform: rotate(-90deg);
+    }
+
+    .svc__facts > div {
+      grid-template-columns: minmax(0, 1fr);
+      gap: 6px;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .svc__tab {
+      grid-template-columns: 44px minmax(0, 1fr) 24px;
+      gap: 14px;
+      padding: 18px 16px;
+    }
+
+    .svc__tab-icon {
+      width: 44px;
+      height: 44px;
+    }
+
+    .svc__tab-summary {
+      display: none;
+    }
+  }
+</style>

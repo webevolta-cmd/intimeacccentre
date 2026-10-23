@@ -1,0 +1,62 @@
+---
+/**
+ * Fallback confirmation page for visitors without JavaScript.
+ * Netlify Forms redirects here after a successful submission (form action).
+ */
+import Base from '../layouts/Base.astro';
+import Logo from '../components/Logo.astro';
+import Icon from '../components/Icon.astro';
+import { business } from '../data/site';
+---
+
+<Base title="Հայտն ուղարկված է | In Time" path="/thanks/" noindex>
+  <main id="main" class="simple-page">
+    <div class="wrap simple-page__inner">
+      <a href="/" class="simple-page__logo" aria-label="In Time Accounting Centre — գլխավոր"><Logo eager /></a>
+      <p class="eyebrow">Շնորհակալություն</p>
+      <h1>Ձեր հայտն ուղարկված է</h1>
+      <p>Մենք կկապվենք ձեզ հետ։ Եթե հարցը հրատապ է, զանգահարեք {business.phones[0].display} համարով։</p>
+      <div class="simple-page__ctas">
+        <a class="btn btn--primary" href="/"><span>Վերադառնալ կայք</span><Icon name="arrow" /></a>
+        <a class="btn btn--ghost" href={`tel:${business.phones[0].tel}`}><Icon name="phone" /><span>{business.phones[0].display}</span></a>
+      </div>
+    </div>
+  </main>
+</Base>
+
+<style is:global>
+  .simple-page {
+    min-height: 100vh;
+    min-height: 100dvh;
+    display: grid;
+    align-items: center;
+    padding-block: 64px;
+  }
+
+  .simple-page__inner {
+    display: grid;
+    gap: 20px;
+    max-width: 760px;
+  }
+
+  .simple-page__logo {
+    width: 150px;
+    margin-bottom: 24px;
+  }
+
+  .simple-page h1 {
+    font-size: var(--t-h2);
+  }
+
+  .simple-page p {
+    font-size: var(--t-lead);
+    color: var(--ink-2);
+  }
+
+  .simple-page__ctas {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-top: 8px;
+  }
+</style>

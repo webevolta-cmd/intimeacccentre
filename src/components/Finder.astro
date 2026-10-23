@@ -1,0 +1,258 @@
+---
+import Icon from './Icon.astro';
+import { finder, services, inquiryTopics, business } from '../data/site';
+
+const serviceTitle = (key: string) => services.find((s) => s.key === key)?.title ?? '';
+const topicFor = (key: string) => inquiryTopics.find((t) => t.service === key)?.value ?? '';
+const first = finder.options[0];
+const phone = business.phones[0];
+---
+
+<section class="section section--tint finder" id="finder" aria-labelledby="finder-title">
+  <div class="wrap finder__grid">
+    <div class="finder__ask">
+      <p class="eyebrow">{finder.eyebrow}</p>
+      <h2 id="finder-title" class="finder__title" data-split>{finder.title}</h2>
+      <p class="finder__intro" data-reveal>{finder.intro}</p>
+
+      <div class="finder__options" role="radiogroup" aria-labelledby="finder-title" data-finder>
+        {
+          finder.options.map((o, i) => (
+            <button
+              type="button"
+              role="radio"
+              class="finder__option"
+              aria-checked={i === 0 ? 'true' : 'false'}
+              tabindex={i === 0 ? 0 : -1}
+              data-finder-option={o.id}
+              data-reveal
+            >
+              <span class="finder__radio" aria-hidden="true" />
+              <span>{o.label}</span>
+            </button>
+          ))
+        }
+      </div>
+    </div>
+
+    <div class="finder__result" aria-live="polite" data-finder-result>
+      {
+        finder.options.map((o, i) => (
+          <article class="finder__card" data-finder-card={o.id} hidden={i !== 0}>
+            <p class="finder__card-kicker">Առաջարկվող ծառայություն</p>
+            <h3 class="finder__card-title">{serviceTitle(o.service)}</h3>
+            <p class="finder__card-text">{o.text}</p>
+            <div class="finder__prep">
+              <p class="finder__prep-title">Առաջին զրույցի համար օգտակար է նշել</p>
+              <ul role="list">
+                {o.prepare.map((p) => (
+                  <li>
+                    <Icon name="check" />
+                    {p}
+                  </li>
+                ))}
+              </ul>
+            </div>
+            <div class="finder__card-cta">
+              <a class="btn btn--primary" href="#contact" data-topic={topicFor(o.service)} data-magnetic>
+                <span>Շարունակել հայտով</span>
+                <Icon name="arrow" />
+              </a>
+              <a class="link-arrow" href={`tel:${phone.tel}`}>
+                <Icon name="phone" />
+                Զանգահարել
+              </a>
+            </div>
+          </article>
+        ))
+      }
+      <noscript>
+        <style>
+          .finder__card[hidden] {
+            display: grid !important;
+          }
+        </style>
+      </noscript>
+    </div>
+  </div>
+</section>
+
+<style is:global>
+  .finder {
+    overflow: clip;
+  }
+
+  .finder__grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: clamp(32px, 6vw, 96px);
+    align-items: start;
+  }
+
+  .finder__ask {
+    display: grid;
+    gap: 18px;
+  }
+
+  .finder__title {
+    font-size: var(--t-h2);
+  }
+
+  .finder__intro {
+    font-size: var(--t-lead);
+    color: var(--ink-2);
+    max-width: 52ch;
+  }
+
+  .finder__options {
+    display: grid;
+    gap: 10px;
+    margin-top: 12px;
+  }
+
+  .finder__option {
+    display: grid;
+    grid-template-columns: 22px minmax(0, 1fr);
+    align-items: center;
+    gap: 16px;
+    width: 100%;
+    min-height: 60px;
+    padding: 14px 20px;
+    text-align: left;
+    font-weight: 500;
+    line-height: 1.4;
+    background: var(--card);
+    border: 1.5px solid var(--line);
+    border-radius: var(--radius-leaf-sm);
+    cursor: pointer;
+    transition:
+      border-color 0.3s ease,
+      background-color 0.3s ease,
+      transform 0.4s var(--ease-out),
+      border-radius 0.5s var(--ease-out);
+  }
+
+  .finder__option:hover {
+    border-color: var(--line-strong);
+    transform: translateX(4px);
+  }
+
+  .finder__radio {
+    position: relative;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    border: 1.5px solid var(--line-strong);
+    background: var(--paper);
+    transition: border-color 0.3s ease;
+  }
+
+  .finder__radio::after {
+    content: '';
+    position: absolute;
+    inset: 4px;
+    border-radius: 50%;
+    background: var(--green);
+    transform: scale(0);
+    transition: transform 0.4s var(--ease-out);
+  }
+
+  .finder__option[aria-checked='true'] {
+    border-color: var(--green);
+    border-radius: 14px 3px 14px 3px;
+    background: #fff;
+  }
+
+  .finder__option[aria-checked='true'] .finder__radio {
+    border-color: var(--green);
+  }
+
+  .finder__option[aria-checked='true'] .finder__radio::after {
+    transform: scale(1);
+  }
+
+  .finder__result {
+    position: sticky;
+    top: calc(var(--header-h) + 32px);
+  }
+
+  .finder__card {
+    display: grid;
+    gap: 18px;
+    padding: clamp(26px, 3.6vw, 48px);
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-leaf-lg);
+    box-shadow: var(--shadow-lift);
+  }
+
+  .finder__card[hidden] {
+    display: none;
+  }
+
+  .finder__card-kicker {
+    font-size: var(--t-label);
+    font-weight: 650;
+    font-stretch: 75%;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--green-ink);
+  }
+
+  .finder__card-title {
+    font-size: clamp(1.6rem, 1.2rem + 1.3vw, 2.3rem);
+  }
+
+  .finder__card-text {
+    color: var(--ink-2);
+  }
+
+  .finder__prep {
+    padding: 18px 20px;
+    background: var(--paper);
+    border-radius: var(--radius-leaf-sm);
+  }
+
+  .finder__prep-title {
+    font-size: var(--t-small);
+    font-weight: 600;
+    margin-bottom: 10px;
+  }
+
+  .finder__prep ul {
+    display: grid;
+    gap: 8px;
+  }
+
+  .finder__prep li {
+    display: grid;
+    grid-template-columns: 20px minmax(0, 1fr);
+    gap: 10px;
+    font-size: var(--t-small);
+    color: var(--ink-2);
+  }
+
+  .finder__prep .icon {
+    width: 20px;
+    height: 20px;
+    color: var(--green);
+    margin-top: 2px;
+  }
+
+  .finder__card-cta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 14px 28px;
+  }
+
+  @media (max-width: 900px) {
+    .finder__grid {
+      grid-template-columns: minmax(0, 1fr);
+    }
+
+    .finder__result {
+      position: static;
+    }
+  }
+</style>

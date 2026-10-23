@@ -1,0 +1,510 @@
+/*
+ * In Time Accounting Centre — design system
+ * Layout concept: a calm "ledger" grid — ruled paper, precise columns,
+ * and the logo's leaf corners (square ↔ rounded) as the recurring shape.
+ */
+
+@font-face {
+  font-family: 'Noto Serif Armenian';
+  font-style: normal;
+  font-display: swap;
+  font-weight: 100 900;
+  font-stretch: 62.5% 100%;
+  src: url('/fonts/noto-serif-armenian-armenian.woff2') format('woff2');
+  unicode-range: U+0308, U+0530-058F, U+2010, U+2024, U+25CC, U+FB13-FB17;
+}
+@font-face {
+  font-family: 'Noto Serif Armenian';
+  font-style: normal;
+  font-display: swap;
+  font-weight: 100 900;
+  font-stretch: 62.5% 100%;
+  src: url('/fonts/noto-serif-armenian-latin.woff2') format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: 'Noto Sans Armenian';
+  font-style: normal;
+  font-display: swap;
+  font-weight: 100 900;
+  font-stretch: 62.5% 100%;
+  src: url('/fonts/noto-sans-armenian-armenian.woff2') format('woff2');
+  unicode-range: U+0308, U+0530-058F, U+2010, U+2024, U+25CC, U+FB13-FB17;
+}
+@font-face {
+  font-family: 'Noto Sans Armenian';
+  font-style: normal;
+  font-display: swap;
+  font-weight: 100 900;
+  font-stretch: 62.5% 100%;
+  src: url('/fonts/noto-sans-armenian-latin.woff2') format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+:root {
+  color-scheme: light;
+
+  /* Colour — sampled from the In Time logo (green → graphite gradient) */
+  --paper: #f2f4f0;
+  --paper-2: #e7ece5;
+  --card: #fbfcfa;
+  --ink: #131d2b;
+  --ink-2: #364253;
+  --muted: #5a6675;
+  --line: rgba(19, 29, 43, 0.12);
+  --line-strong: rgba(19, 29, 43, 0.22);
+  --green: #0f9e4c;
+  --green-ink: #0b7a3b;
+  --green-deep: #0a5130;
+  --mint: #80cca0;
+  --mint-soft: #d5ecdd;
+  --night: #0d1520;
+  --night-2: #152232;
+  --night-line: rgba(233, 241, 236, 0.12);
+  --night-text: #e9f0ec;
+  --night-muted: #a6b4c0;
+  --grey-leaf: #7d7e8a;
+  --danger: #b42318;
+  --danger-soft: #fdecea;
+  --brand-gradient: linear-gradient(160deg, #11994c 0%, #146b45 45%, #131d2b 100%);
+
+  /* Type */
+  --f-display: 'Noto Serif Armenian', 'Noto Serif', Georgia, 'Times New Roman', serif;
+  --f-body: 'Noto Sans Armenian', 'Noto Sans', 'Segoe UI', system-ui, -apple-system, sans-serif;
+
+  --t-hero: clamp(2.05rem, 1.1rem + 3vw, 4rem);
+  --t-h2: clamp(1.85rem, 1.2rem + 2.5vw, 3.35rem);
+  --t-h3: clamp(1.2rem, 1.05rem + 0.55vw, 1.55rem);
+  --t-lead: clamp(1.06rem, 1rem + 0.3vw, 1.25rem);
+  --t-body: 1.0625rem;
+  --t-small: 0.9375rem;
+  --t-label: 0.78rem;
+
+  /* Space & shape */
+  --gutter: clamp(16px, 4vw, 48px);
+  --container: 1240px;
+  --section-y: clamp(72px, 7.5vw, 124px);
+  --radius-leaf: 4px 22px 4px 22px;
+  --radius-leaf-sm: 3px 14px 3px 14px;
+  --radius-leaf-lg: 6px 40px 6px 40px;
+  --shadow-soft: 0 1px 2px rgba(19, 29, 43, 0.05), 0 12px 32px -12px rgba(19, 29, 43, 0.18);
+  --shadow-lift: 0 2px 4px rgba(19, 29, 43, 0.06), 0 24px 48px -18px rgba(19, 29, 43, 0.28);
+
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+  --header-h: 76px;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+  scroll-padding-top: calc(var(--header-h) + 16px);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  html {
+    scroll-behavior: smooth;
+  }
+}
+
+body {
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--f-body);
+  font-size: var(--t-body);
+  line-height: 1.65;
+  font-kerning: normal;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: clip;
+}
+
+/* Paint the phone's top safe-area band so content never shows under the system bar. */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0 0 auto;
+  height: env(safe-area-inset-top, 0px);
+  background: var(--paper);
+  z-index: 60;
+}
+
+img,
+svg,
+video {
+  display: block;
+  max-width: 100%;
+}
+
+img {
+  height: auto;
+}
+
+a {
+  color: inherit;
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
+  color: inherit;
+}
+
+h1,
+h2,
+h3,
+h4,
+p,
+ul,
+ol,
+figure,
+blockquote,
+dl,
+dd {
+  margin: 0;
+}
+
+:where(ul[role='list'], ol[role='list']) {
+  list-style: none;
+  padding: 0;
+}
+
+h1,
+h2,
+h3 {
+  font-family: var(--f-display);
+  font-weight: 450;
+  font-stretch: 87.5%;
+  line-height: 1.08;
+  letter-spacing: -0.012em;
+  text-wrap: balance;
+}
+
+p {
+  text-wrap: pretty;
+}
+
+::selection {
+  background: var(--mint);
+  color: var(--ink);
+}
+
+:focus-visible {
+  outline: 2.5px solid var(--green-ink);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+.skip-link {
+  position: absolute;
+  left: max(16px, env(safe-area-inset-left, 0px));
+  top: -100px;
+  z-index: 100;
+  padding: 12px 18px;
+  background: var(--ink);
+  color: #fff;
+  border-radius: var(--radius-leaf-sm);
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.skip-link:focus {
+  top: calc(env(safe-area-inset-top, 0px) + 12px);
+}
+
+.sr-only {
+  position: absolute !important;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* ---------- Layout ---------- */
+
+.wrap {
+  width: 100%;
+  max-width: calc(var(--container) + 2 * var(--gutter));
+  margin-inline: auto;
+  padding-left: max(var(--gutter), env(safe-area-inset-left, 0px));
+  padding-right: max(var(--gutter), env(safe-area-inset-right, 0px));
+}
+
+.section {
+  position: relative;
+  padding-block: var(--section-y);
+}
+
+.section--night {
+  background: var(--night);
+  color: var(--night-text);
+}
+
+.section--tint {
+  background: var(--paper-2);
+}
+
+.section--card {
+  background: var(--card);
+}
+
+.section-head {
+  display: grid;
+  gap: 18px;
+  max-width: 760px;
+  margin-bottom: clamp(40px, 5vw, 72px);
+}
+
+.section-head h2 {
+  font-size: var(--t-h2);
+}
+
+.section-head p {
+  font-size: var(--t-lead);
+  color: var(--ink-2);
+  max-width: 62ch;
+}
+
+.section--night .section-head p {
+  color: var(--night-muted);
+}
+
+.eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-family: var(--f-body);
+  font-size: var(--t-label);
+  font-weight: 650;
+  font-stretch: 75%;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--green-ink);
+}
+
+.eyebrow::before {
+  content: '';
+  width: 18px;
+  height: 10px;
+  background: currentColor;
+  border-radius: 1px 6px 1px 6px;
+  flex: none;
+}
+
+.section--night .eyebrow {
+  color: var(--mint);
+}
+
+.accent {
+  color: var(--green);
+  font-weight: 640;
+}
+
+.accent-gradient {
+  background: linear-gradient(100deg, #0f9e4c 0%, #12804a 55%, #146b45 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  font-weight: 640;
+}
+
+/* ---------- Buttons ---------- */
+
+.btn {
+  --btn-bg: var(--ink);
+  --btn-fg: #fff;
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  min-height: 52px;
+  padding: 14px 24px;
+  border: 1.5px solid transparent;
+  border-radius: var(--radius-leaf-sm);
+  background: var(--btn-bg);
+  color: var(--btn-fg);
+  font-weight: 600;
+  font-size: 1rem;
+  line-height: 1.2;
+  text-decoration: none;
+  cursor: pointer;
+  isolation: isolate;
+  overflow: hidden;
+  transition:
+    border-radius 0.45s var(--ease-out),
+    background-color 0.3s ease,
+    color 0.3s ease,
+    border-color 0.3s ease,
+    box-shadow 0.3s ease;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.btn::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: var(--green);
+  transform: translateY(101%);
+  transition: transform 0.45s var(--ease-out);
+}
+
+.btn .icon {
+  transition: transform 0.45s var(--ease-out);
+}
+
+@media (hover: hover) {
+  .btn:hover {
+    border-radius: 14px 3px 14px 3px;
+  }
+
+  .btn:hover::after {
+    transform: translateY(0);
+  }
+
+  .btn:hover .icon--arrow {
+    transform: translateX(4px);
+  }
+}
+
+.btn:active {
+  transform: translateY(1px);
+}
+
+.btn--primary {
+  --btn-bg: var(--green-ink);
+}
+
+.btn--primary::after {
+  background: var(--ink);
+}
+
+.btn--ghost {
+  --btn-bg: transparent;
+  --btn-fg: var(--ink);
+  border-color: var(--line-strong);
+}
+
+.btn--ghost::after {
+  background: var(--ink);
+}
+
+@media (hover: hover) {
+  .btn--ghost:hover {
+    color: #fff;
+    border-color: var(--ink);
+  }
+}
+
+.btn--light {
+  --btn-bg: #fff;
+  --btn-fg: var(--ink);
+}
+
+.btn--light::after {
+  background: var(--mint);
+}
+
+.btn--outline-light {
+  --btn-bg: transparent;
+  --btn-fg: var(--night-text);
+  border-color: rgba(233, 241, 236, 0.35);
+}
+
+.btn--outline-light::after {
+  background: var(--night-text);
+}
+
+@media (hover: hover) {
+  .btn--outline-light:hover {
+    color: var(--ink);
+  }
+}
+
+.btn--sm {
+  min-height: 44px;
+  padding: 10px 18px;
+  font-size: 0.95rem;
+}
+
+.btn[disabled],
+.btn[aria-disabled='true'] {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.link-arrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--green-ink);
+  font-weight: 600;
+  text-decoration: none;
+  background: linear-gradient(currentColor, currentColor) 0 100% / 0 1.5px no-repeat;
+  transition: background-size 0.4s var(--ease-out);
+  padding-bottom: 2px;
+}
+
+.link-arrow:hover {
+  background-size: 100% 1.5px;
+}
+
+.icon {
+  width: 1.25em;
+  height: 1.25em;
+  flex: none;
+}
+
+/* ---------- Ledger texture ---------- */
+
+.ledger-bg {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background-image:
+    linear-gradient(var(--line) 1px, transparent 1px),
+    linear-gradient(90deg, var(--line) 1px, transparent 1px);
+  background-size: 56px 56px;
+  background-position: -1px -1px;
+  opacity: 0.55;
+  -webkit-mask-image: radial-gradient(ellipse 70% 60% at 70% 40%, #000 20%, transparent 75%);
+  mask-image: radial-gradient(ellipse 70% 60% at 70% 40%, #000 20%, transparent 75%);
+}
+
+/* ---------- Motion hooks ----------
+   Content is visible by default. Script only hides elements below the fold
+   right before animating them in, and never when reduced motion is requested. */
+
+[data-reveal].is-pending {
+  opacity: 0;
+}
+
+.motion-off [data-reveal].is-pending {
+  opacity: 1 !important;
+  transform: none !important;
+}
+
+.split-line {
+  display: block;
+}
+
+/* Mobile action bar leaves room at the end of the page */
+@media (max-width: 860px) {
+  .footer {
+    padding-bottom: calc(72px + env(safe-area-inset-bottom, 0px));
+  }
+}
