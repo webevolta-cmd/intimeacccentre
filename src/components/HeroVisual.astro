@@ -79,14 +79,16 @@ const docs = [
       <circle class="hv-ring" cx={CX} cy={CY} r={R} pathLength="1"></circle>
       <circle class="hv-ring hv-ring--inner" cx={CX} cy={CY} r={R - 52}></circle>
       <path class="hv-ticks hv-ticks--minor" d={minor}></path>
-      {major.map((d, i) => <path class="hv-ticks hv-ticks--major" d={d} style={`--i:${i}`} />)}
-      {
-        labels.map((l) => (
-          <text class="hv-month" x={l.x} y={l.y} style={`--i:${l.i}`}>
-            {l.m}
-          </text>
-        ))
-      }
+      <path class="hv-ticks hv-ticks--major" d={major.join('')}></path>
+      <g class="hv-months">
+        {
+          labels.map((l) => (
+            <text class="hv-month" x={l.x} y={l.y}>
+              {l.m}
+            </text>
+          ))
+        }
+      </g>
       <circle
         class="hv-progress"
         cx={CX}
@@ -165,14 +167,16 @@ const docs = [
         <path class="hv-card-shadow" d={leaf(46, 78, 160, 124, 18, 3)}></path>
         <path class="hv-card" d={leaf(40, 72, 160, 124, 18, 3)}></path>
         <text class="hv-label" x="58" y="98">Ժամկետներ</text>
-        {
-          Array.from({ length: 21 }).map((_, k) => {
-            const c = k % 7;
-            const r = Math.floor(k / 7);
-            const cls = k === 11 ? 'hv-cell hv-cell--due' : [3, 9, 17].includes(k) ? 'hv-cell hv-cell--set' : 'hv-cell';
-            return <rect class={cls} x={58 + c * 18} y={112 + r * 22} width="12" height="12" rx="2.5" style={`--k:${k}`} />;
-          })
-        }
+        <g class="hv-cells">
+          {
+            Array.from({ length: 21 }).map((_, k) => {
+              const c = k % 7;
+              const r = Math.floor(k / 7);
+              const cls = k === 11 ? 'hv-cell hv-cell--due' : [3, 9, 17].includes(k) ? 'hv-cell hv-cell--set' : 'hv-cell';
+              return <rect class={cls} x={58 + c * 18} y={112 + r * 22} width="12" height="12" rx="2.5" />;
+            })
+          }
+        </g>
         <path class="hv-check hv-check--cell" d="M117 141.5l2.6 2.6 5-5.4" pathLength="1" style="--delay:2.45s"></path>
       </g>
 
@@ -508,9 +512,8 @@ const docs = [
     }
 
     .hero-visual.is-playing .hv-ticks--major,
-    .hero-visual.is-playing .hv-month {
-      animation: hv-fade 0.6s ease both;
-      animation-delay: calc(0.3s + var(--i) * 0.06s);
+    .hero-visual.is-playing .hv-months {
+      animation: hv-fade 0.9s ease 0.35s both;
     }
 
     .hero-visual.is-playing .hv-progress {
@@ -541,9 +544,8 @@ const docs = [
       animation-delay: var(--delay);
     }
 
-    .hero-visual.is-playing .hv-cell {
-      animation: hv-fade 0.4s ease both;
-      animation-delay: calc(1.05s + var(--k) * 0.025s);
+    .hero-visual.is-playing .hv-cells {
+      animation: hv-fade 0.6s ease 1.05s both;
     }
 
     .hero-visual.is-playing .hv-cell--due {

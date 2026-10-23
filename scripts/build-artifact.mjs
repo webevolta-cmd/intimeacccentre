@@ -36,6 +36,9 @@ html = html.replace(/<link rel="stylesheet" href="(\/_astro\/[^"]+\.css)"\s*\/?>
   return `<style>${css}</style>`;
 });
 
+// Fonts referenced from inline <style> blocks
+html = html.replace(/url\((['"]?)(\/fonts\/[^'")]+)\1\)/g, (_m, _q, font) => `url(${dataUri(local(font))})`);
+
 // 2. Module script → inline
 html = html.replace(/<script type="module" src="(\/_astro\/[^"]+\.js)"><\/script>/g, (_, src) => {
   const js = readFileSync(local(src), 'utf8').replace(/<\/script/gi, '<\\/script');

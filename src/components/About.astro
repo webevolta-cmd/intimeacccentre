@@ -240,6 +240,12 @@ const { founders, certificate, office } = about.photos;
     }
   }
 
+  @media (max-width: 600px) {
+    .about__photo--main figcaption {
+      max-width: 52%;
+    }
+  }
+
   @media (max-width: 520px) {
     .credential {
       grid-template-columns: 96px minmax(0, 1fr);

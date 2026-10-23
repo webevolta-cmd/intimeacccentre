@@ -14,7 +14,7 @@ export default defineConfig({
   trailingSlash: 'ignore',
   build: {
     format: 'directory',
-    inlineStylesheets: 'never',
+    inlineStylesheets: 'always',
   },
   outDir: process.env.ARTIFACT_BUILD ? './.artifact/dist' : './dist',
   compressHTML: true,

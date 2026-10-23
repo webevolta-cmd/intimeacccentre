@@ -187,10 +187,12 @@ h3 {
   line-height: 1.08;
   letter-spacing: -0.012em;
   text-wrap: balance;
+  overflow-wrap: break-word;
 }
 
 p {
   text-wrap: pretty;
+  overflow-wrap: break-word;
 }
 
 ::selection {

@@ -66,26 +66,45 @@ function heroPointer() {
 
 function splitHeadings() {
   const splits: SplitText[] = [];
-  $$('[data-split]').forEach((el) => {
-    if (!belowFold(el)) return;
-    const split = SplitText.create(el, {
-      type: 'lines',
-      mask: 'lines',
-      linesClass: 'split-line',
-      autoSplit: true,
-      aria: 'auto',
-      onSplit: (self) =>
-        gsap.from(self.lines, {
-          yPercent: 105,
-          duration: 1.05,
-          ease: 'expo.out',
-          stagger: 0.09,
-          scrollTrigger: { trigger: el, start: 'top 88%', once: true },
-        }),
-    });
-    splits.push(split);
-  });
-  return () => splits.forEach((s) => s.revert());
+  const targets = $$('[data-split]').filter(belowFold);
+  if (!targets.length) return () => {};
+
+  // Split each heading only shortly before it scrolls into view (keeps start-up work small).
+  const split = (el: HTMLElement) =>
+    splits.push(
+      SplitText.create(el, {
+        type: 'lines',
+        mask: 'lines',
+        linesClass: 'split-line',
+        autoSplit: true,
+        aria: 'auto',
+        onSplit: (self) =>
+          gsap.from(self.lines, {
+            yPercent: 105,
+            duration: 1.05,
+            ease: 'expo.out',
+            stagger: 0.09,
+            scrollTrigger: { trigger: el, start: 'top 90%', once: true },
+          }),
+      }),
+    );
+
+  const io = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        if (!entry.isIntersecting) return;
+        io.unobserve(entry.target);
+        split(entry.target as HTMLElement);
+      });
+    },
+    { rootMargin: '0px 0px 35% 0px' },
+  );
+  targets.forEach((el) => io.observe(el));
+
+  return () => {
+    io.disconnect();
+    splits.forEach((s) => s.revert());
+  };
 }
 
 /* ---------- Generic reveals ---------- */

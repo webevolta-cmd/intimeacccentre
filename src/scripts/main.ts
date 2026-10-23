@@ -2,20 +2,23 @@ import { initUI } from './ui';
 import { initForm } from './form';
 import { initMotion } from './motion';
 
-const start = () => {
+const startMotion = () => {
   try {
-    initUI();
-    initForm();
-  } finally {
+    initMotion();
+  } catch (error) {
     // Motion is optional: if it fails, the page stays fully readable.
-    try {
-      initMotion();
-    } catch (error) {
-      document.documentElement.classList.add('motion-off');
-      console.warn('Animations are disabled:', error);
-    }
-    document.documentElement.classList.add('motion-ready');
+    document.documentElement.classList.add('motion-off');
+    console.warn('Animations are disabled:', error);
   }
+  document.documentElement.classList.add('motion-ready');
+};
+
+const start = () => {
+  initUI();
+  initForm();
+  // Scroll effects are set up when the browser is idle, after the first paint.
+  if ('requestIdleCallback' in window) window.requestIdleCallback(startMotion, { timeout: 1200 });
+  else window.setTimeout(startMotion, 200);
 };
 
 if (document.readyState === 'loading') {
